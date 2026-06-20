@@ -1,0 +1,266 @@
+/* =====================================================================
+   VARIABLES — tout le design se contrôle ici
+   ===================================================================== */
+:root {
+  --primary-color:   #1a3a5c;
+  --accent-color:    #2b7bb9;
+  --bg-sidebar:      #1a3a5c;
+  --text-color:      #333333;
+  --text-light:      #666666;
+  --text-sidebar:    #ffffff;
+  --text-sidebar-dim: rgba(255, 255, 255, 0.7);
+  --border-color:    #e0e0e0;
+
+  --font-main:       'Liberation Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:       'Liberation Mono', 'Courier New', monospace;
+
+  --page-w:          210mm;
+  --page-h:          297mm;
+  --page-margin:     12mm;
+
+  /* Layout 2 colonnes — valeurs mm explicites (plus fiables que % dans WeasyPrint) */
+  --sidebar-w:       75.6mm;   /* 36 % de 210 mm */
+  --main-w:          134.4mm;  /* 64 % de 210 mm */
+
+  --font-size-base:  9pt;
+  --font-size-name:  20pt;
+  --font-size-h2:    8pt;
+  --font-size-h3:    9pt;
+}
+
+/* =====================================================================
+   PAGE — règles d'impression A4
+   ===================================================================== */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+/* =====================================================================
+   RESET & BASE
+   ===================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position:    relative;
+  width:       var(--page-w);
+  height:      var(--page-h);
+  overflow:    hidden;
+  font-family: var(--font-main);
+  font-size:   var(--font-size-base);
+  color:       var(--text-color);
+  line-height: 1.45;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* =====================================================================
+   LAYOUT 2 COLONNES — position:absolute avec mm fixes
+   WeasyPrint supporte mal flexbox/grid pour le layout de page ;
+   l'approche absolute + mm explicites est la plus fiable.
+   ===================================================================== */
+.sidebar {
+  position:         absolute;
+  top:              0;
+  left:             0;
+  width:            var(--sidebar-w);
+  height:           var(--page-h);
+  overflow:         hidden;
+  background-color: var(--bg-sidebar);
+  color:            var(--text-sidebar);
+  padding:          var(--page-margin);
+}
+
+.main-content {
+  position: absolute;
+  top:      0;
+  left:     var(--sidebar-w);
+  width:    var(--main-w);
+  height:   var(--page-h);
+  overflow: hidden;
+  padding:  var(--page-margin);
+}
+
+/* =====================================================================
+   SIDEBAR — identité
+   ===================================================================== */
+.identity {
+  margin-bottom: 6mm;
+  padding-bottom: 4mm;
+  border-bottom: 1px solid var(--text-sidebar-dim);
+}
+
+.cv-name {
+  font-size:   var(--font-size-name);
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: break-word;
+}
+
+.cv-tagline {
+  font-size:      10pt;
+  font-weight:    600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--accent-color);
+  margin-top:     2mm;
+}
+
+/* --- sections génériques de la sidebar --- */
+.sidebar-section {
+  margin-top: 5mm;
+}
+
+.sidebar-section h2 {
+  font-size:      var(--font-size-h2);
+  font-weight:    700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:          var(--text-sidebar-dim);
+  border-bottom:  1px solid var(--text-sidebar-dim);
+  padding-bottom: 1mm;
+  margin-bottom:  2mm;
+}
+
+.sidebar-section h3 {
+  font-size:     var(--font-size-h3);
+  font-weight:   600;
+  color:         var(--text-sidebar);
+  margin-top:    2.5mm;
+  margin-bottom: 1mm;
+}
+
+.sidebar-section ul li {
+  font-size:     8.5pt;
+  color:         var(--text-sidebar-dim);
+  margin-bottom: 0.8mm;
+}
+
+/* --- disponibilite --- */
+.disponibilite p {
+  font-size:   8.5pt;
+  color:       var(--text-sidebar-dim);
+  line-height: 1.5;
+}
+
+/* --- contact --- */
+.contact ul li {
+  font-size: 8pt;
+}
+
+/* --- langues : nom à gauche, niveau à droite ---
+   display:table au lieu de flex (WeasyPrint gère mieux table que flex inline) */
+.langues li {
+  display: table;
+  width:   100%;
+}
+
+.langue-nom {
+  display: table-cell;
+}
+
+.langue-niveau {
+  display:    table-cell;
+  text-align: right;
+  color:      var(--accent-color);
+}
+
+/* =====================================================================
+   MAIN CONTENT
+   ===================================================================== */
+
+/* accroche */
+.main-content > p:first-child {
+  font-style:    italic;
+  color:         var(--text-light);
+  border-left:   3px solid var(--accent-color);
+  padding-left:  3mm;
+  margin-bottom: 6mm;
+  line-height:   1.6;
+}
+
+/* --- titres de section (h2) --- */
+.main-content h2 {
+  font-size:      var(--font-size-h2);
+  font-weight:    700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:          var(--text-light);
+  border-bottom:  1px solid var(--border-color);
+  padding-bottom: 1mm;
+  margin-top:     5mm;
+  margin-bottom:  3mm;
+}
+
+/* --- entrées (h3 = titre du projet/poste/diplôme) --- */
+.main-content h3 {
+  font-size:     10pt;
+  font-weight:   600;
+  color:         var(--text-color);
+  margin-bottom: 0.5mm;
+}
+
+/* organisation + date */
+.main-content h3 + p > strong:first-child {
+  color: var(--accent-color);
+}
+
+/* corps de description */
+.main-content p {
+  font-size:     8.5pt;
+  margin-bottom: 2mm;
+  color:         var(--text-color);
+}
+
+/* tags techniques (code inline) */
+.main-content code {
+  font-family:      var(--font-mono);
+  font-size:        7.5pt;
+  background-color: #eef3f8;
+  color:            var(--primary-color);
+  border:           1px solid #c8d8e8;
+  border-radius:    2px;
+  padding:          0.5mm 1.5mm;
+  margin-right:     1mm;
+  white-space:      nowrap;
+}
+
+/* soft skills : inline au lieu de flex (WeasyPrint supporte bien display:inline) */
+.main-content ul {
+  margin-top: 1mm;
+}
+
+.main-content ul li {
+  display:      inline;
+  font-size:    8.5pt;
+  color:        var(--text-color);
+  margin-right: 4mm;
+}
+
+.main-content ul li::before {
+  content:   "■ ";
+  color:     var(--primary-color);
+  font-size: 6pt;
+}
+
+/* =====================================================================
+   SAUTS DE PAGE
+   ===================================================================== */
+h2 { page-break-after: avoid; }
+h3 { page-break-after: avoid; }
+
+h3 + p,
+h3 + p + p {
+  page-break-before: avoid;
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$name$ — $tagline$</title>
+  <link rel="stylesheet" href="style/print.css">
+</head>
+<body>
+
+  <aside class="sidebar">
+
+    <div class="identity">
+      <h1 class="cv-name">$name$</h1>
+      <p class="cv-tagline">$tagline$</p>
+    </div>
+
+    <section class="sidebar-section disponibilite">
+      <h2>Disponibilité</h2>
+      <p>$disponibilite$</p>
+    </section>
+
+    <section class="sidebar-section contact">
+      <h2>Contact</h2>
+      <ul>
+        <li class="contact-location">$contact.location$</li>
+        <li class="contact-email"><a href="mailto:$contact.email$">$contact.email$</a></li>
+        <li class="contact-phone">$contact.phone$</li>
+        <li class="contact-permit">$contact.permit$</li>
+        <li class="contact-linkedin"><a href="$contact.linkedin$">LinkedIn</a></li>
+      </ul>
+    </section>
+
+    <section class="sidebar-section competences">
+      <h2>Compétences</h2>
+
+      <h3>Cybersécurité</h3>
+      <ul>
+        $for(competences.cybersecurite)$
+        <li>$it$</li>
+        $endfor$
+      </ul>
+
+      <h3>Outils</h3>
+      <ul>
+        $for(competences.outils)$
+        <li>$it$</li>
+        $endfor$
+      </ul>
+
+      <h3>Systèmes &amp; Réseaux</h3>
+      <ul>
+        $for(competences.systemes_reseaux)$
+        <li>$it$</li>
+        $endfor$
+      </ul>
+
+      <h3>Scripting</h3>
+      <ul>
+        $for(competences.scripting)$
+        <li>$it$</li>
+        $endfor$
+      </ul>
+    </section>
+
+    <section class="sidebar-section langues">
+      <h2>Langues</h2>
+      <ul>
+        $for(langues)$
+        <li>
+          <span class="langue-nom">$it.nom$</span>
+          <span class="langue-niveau">$it.niveau$</span>
+        </li>
+        $endfor$
+      </ul>
+    </section>
+
+    <section class="sidebar-section interets">
+      <h2>Intérêts</h2>
+      <ul>
+        $for(interets)$
+        <li>$it$</li>
+        $endfor$
+      </ul>
+    </section>
+
+  </aside>
+
+  <main class="main-content">
+    $body$
+  </main>
+
+</body>
+</html>

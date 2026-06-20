@@ -1,0 +1,52 @@
+name: Build CV
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # nécessaire pour créer des Releases et des tags
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build --platform linux/amd64 -t cv-builder .
+
+      - name: Generate PDF
+        run: |
+          mkdir -p build
+          docker run --rm \
+            -v "${{ github.workspace }}/content:/cv/content:ro" \
+            -v "${{ github.workspace }}/template:/cv/template:ro" \
+            -v "${{ github.workspace }}/style:/cv/style:ro" \
+            -v "${{ github.workspace }}/build:/cv/build" \
+            cv-builder
+
+      # ── Artefact (téléchargeable depuis l'onglet Actions) ──────────────────
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-pdf
+          path: build/cv.pdf
+          retention-days: 30
+
+      # ── Release GitHub (PDF attaché, tag date, idempotent) ─────────────────
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="cv-$(date +'%Y-%m-%d')"
+
+          # Supprime release + tag existants si même date (plusieurs pushs/jour)
+          gh release delete "$TAG" --yes 2>/dev/null || true
+          git push --delete origin "$TAG"  2>/dev/null || true
+
+          gh release create "$TAG" \
+            --title "CV – $(date +'%Y-%m-%d')" \
+            --notes "Build automatique déclenché par le commit \`${{ github.sha }}\`." \
+            build/cv.pdf
